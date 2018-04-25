@@ -1,0 +1,129 @@
+package utils
+
+import (
+	"io/ioutil"
+	"log"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/idoall/TokenExchangeSimple/config"
+	"github.com/idoall/TokenExchangeSimple/logger"
+)
+
+/**
+ * 获取 xpath 的值
+ */
+func XmlGetSingleValue(xpath string) string {
+	xmlSource, err := ioutil.ReadFile(config.TradeFile)
+
+	if err != nil {
+		logger.WriteOutput(err.Error(), "error")
+	}
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(xmlSource)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return doc.Find(xpath).Text()
+}
+
+/**
+ * 判断交易对之前的购买状态
+ * @symbol 交易对信息
+ */
+func XmlGetListValue(symbol string, nodeName string) string {
+	xmlSource, err := ioutil.ReadFile(config.TradeFile)
+
+	if err != nil {
+		logger.WriteOutput(err.Error(), "error")
+	}
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(xmlSource)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var _val string
+	doc.Find("list trade").Each(func(i int, s *goquery.Selection) {
+
+		if s.Find("symbol").Text() == symbol {
+			_val = s.Find(nodeName).Text()
+		}
+	})
+	return _val
+}
+
+/**
+ * 保存数据信息
+ * @_symbol 交易对
+ * @_price 价格
+ * @_amount 数量
+ * @_type 交易类型
+ */
+func XmlSave(_symbol string, _price float64, _amount float64, _type string) {
+	xmlSource, err := ioutil.ReadFile(config.TradeFile)
+
+	if err != nil {
+		logger.WriteOutput(err.Error(), "error")
+	}
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(xmlSource)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc.Find("list trade").Each(func(i int, s *goquery.Selection) {
+		//如果节点信息匹配，进行保存
+		if s.Find("symbol").Text() == _symbol {
+			s.Find("price").SetText(strconv.FormatFloat(_price, 'f', 8, 64))
+			s.Find("amount").SetText(strconv.FormatFloat(_amount, 'f', 8, 64))
+			s.Find("type").SetText(_type)
+			s.Find("time").SetText(time.Now().Format("2006-01-02 15:04:05.000"))
+		}
+	})
+
+	//获取 html 信息
+	html, err := doc.Html()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	//保存文件
+	err = ioutil.WriteFile(config.TradeFile, []byte(html), 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+// func XmlGetSymbol(string symbol) {
+// 	xmlSource, err := ioutil.ReadFile(config.TradeFile)
+//
+// 	if err != nil {
+// 		logger.WriteOutput(err.Error(), "error")
+// 	}
+//
+// 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(xmlSource)))
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+//
+// 	doc.Find("list trade").Each(func(i int, s *goquery.Selection) {
+// 		if s.Find("symbol").Text() == "btmeth" {
+// 			s.Find("symbol").SetText("text")
+// 		}
+// 	})
+//
+// 	html, err := doc.Html()
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
+//
+// 	err = ioutil.WriteFile(config.TradeFile, []byte(html), 0644)
+// 	fmt.Println(html)
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
+// }

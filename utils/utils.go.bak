@@ -1,0 +1,75 @@
+// Copyright 2016 mshk.top, lion@mshk.top
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package utils
+
+// // Http POST请求基础函数, 通过封装Go语言Http请求, 支持火币网REST API的HTTP POST请求
+// // strUrl: 请求的URL
+// // mapParams: map类型的请求参数
+// // return: 请求结果
+// func HttpPostRequest(strUrl string, mapParams map[string]string) string {
+// 	httpClient := &http.Client{}
+//
+// 	jsonParams := ""
+// 	if nil != mapParams {
+// 		bytesParams, _ := json.Marshal(mapParams)
+// 		jsonParams = string(bytesParams)
+// 	}
+//
+// 	request, err := http.NewRequest("POST", strUrl, strings.NewReader(jsonParams))
+// 	if nil != err {
+// 		return err.Error()
+// 	}
+// 	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36")
+// 	request.Header.Add("Content-Type", "application/json")
+// 	request.Header.Add("Accept-Language", "zh-cn")
+//
+// 	response, err := httpClient.Do(request)
+// 	defer response.Body.Close()
+// 	if nil != err {
+// 		return err.Error()
+// 	}
+//
+// 	body, err := ioutil.ReadAll(response.Body)
+// 	if nil != err {
+// 		return err.Error()
+// 	}
+//
+// 	return string(body)
+// }
+//
+//
+//
+// // 进行签名后的HTTP POST请求, 参考官方Python Demo写的
+// // mapParams: map类型的请求参数, key:value
+// // strRequest: API路由路径
+// // return: 请求结果
+// func ApiKeyPost(mapParams map[string]string, strRequestPath string) string {
+// 	strMethod := "POST"
+// 	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05")
+//
+// 	mapParams2Sign := make(map[string]string)
+// 	mapParams2Sign["AccessKeyId"] = config.Huobi_ACCESS_KEY
+// 	mapParams2Sign["SignatureMethod"] = "HmacSHA256"
+// 	mapParams2Sign["SignatureVersion"] = "2"
+// 	mapParams2Sign["Timestamp"] = timestamp
+//
+// 	hostName := "api.huobi.pro"
+//
+// 	mapParams2Sign["Signature"] = CreateSign(mapParams2Sign, strMethod, hostName, strRequestPath, config.Huobi_SECRET_KEY)
+// 	strUrl := config.Huobi_TRADE_URL + strRequestPath + "?" + Map2UrlQuery(MapValueEncodeURI(mapParams2Sign))
+//
+// 	return HttpPostRequest(strUrl, mapParams)
+// }
+//

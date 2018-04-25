@@ -1,0 +1,9 @@
+language: go
+before_install:
+  - go get github.com/rakanalh/scheduler
+script:
+  # Run the unit tests suite
+  - bash ./test.sh
+after_success:
+  # Send coverage reports to Codecov
+  - curl -s https://codecov.io/bash | bash -s - -f coverage.txt -t 776745e2-1ee4-4553-8c73-21390e96d284
